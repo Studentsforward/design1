@@ -1,0 +1,12 @@
+Hey so just a text file here, but you can type the code in below into
+any command line tool to retrieve the information for a test bank
+account created by plaid.
+
+Visit https://plaid.com for more info about this, I thoroughly enjoy it
+
+curl -X POST https://tartan.plaid.com/connect \
+  -d client_id=test_id \
+  -d secret=test_secret \
+  -d username=plaid_test \
+  -d password=plaid_good \
+  -d type=wells
