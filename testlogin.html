@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Test login page</title>
+ 
+    
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+ 
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+    <link href="http://ec2-54-153-11-215.us-west-1.compute.amazonaws.com/templates/testlogin.css" rel="stylesheet"> 
+    <script src="http://ec2-54-153-11-215.us-west-1.compute.amazonaws.com/jQuery3.1.1"></script>
+
+  </head>
+ 
+  <body>
+ 
+    <div class="container">
+      <div class="header">
+        <nav>
+          <ul class="nav nav-pills pull-right">
+            <li role="presentation" ><a href="main">Home</a></li>
+            <li role="presentation"><a href="signIn">Sign In</a></li>
+            <li role="presentation" class="active"><a href="signUp">Sign Up</a></li>
+          </ul>
+        </nav>
+        <h3 class="text-muted">Python Flask App</h3>
+      </div>
+ 
+      <div class="jumbotron">
+        <h1>Giving Tree</h1>
+        <form class="form-signin">
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="email" name="inputEmail" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" name="inputPassword" id="inputPassword" class="form-control" placeholder="Password" required>
+         
+        <button id="btnSignUp" class="btn btn-lg btn-primary btn-block" type="button">Sign in</button>
+	<p id="errorlabel" style="color: red;, text-align: center; padding-top: 15px; padding-bottom: 0px; margin-bottom: 0px;"></p>
+      </form>
+      </div>
+ 
+<script>
+$(function() {
+    $('#btnSignUp').click(function() {
+ 
+        $.ajax({
+            url: '/signInPost',
+            data: $('form').serialize(),
+            type: 'POST',
+            success: function(text) {
+		//response should be in json form
+		var response = JSON.parse(text);
+		console.log("Full JSON text: " + text)
+                if(response["error"] !== undefined) {
+			console.log("there was an error: " + response["error"]);
+			
+			$('#errorlabel').css('color', 'red');
+                        $('#errorlabel').text(response["error"]);
+			$('#errorlabel').show();
+			//make label disappear after 2.5 seconds
+			//setTimeout(function(){ $('#errorlabel').hide(); }, 2500);
+		}
+		else if(response["success"] !== undefined) {
+			$('#errorlabel').css('color', 'green');
+			if(response["fname"] !== undefined) {
+				var fname = response["fname"]
+				$('#errorlabel').text("Welcome, " + fname.charAt(0).toUpperCase() + fname.slice(1)) //yeah javascript does not have a capitalize function >:(
+			}
+			else {
+				$('#errorlabel').text("User authenticated");
+			}
+
+			if(response["schoolName"] !== undefined) {
+				$('#errorlabel').text($('#errorlabel').text() + ".\n How is " + response["schoolName"] + " going?")
+			}
+			$('#errorlabel').show();
+		}
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    });
+});
+</script>
+       
+ 
+      <footer class="footer">
+        <p>&copy; Company 2015</p>
+      </footer>
+ 
+    </div>
+  </body>
+</html>
+
