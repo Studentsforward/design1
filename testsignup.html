@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Giving Tree</title>
+ 
+    
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+ 
+    <link href="http://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
+    <link href="http://ec2-54-153-11-215.us-west-1.compute.amazonaws.com/templates/testlogin.css" rel="stylesheet"> 
+    <script src="http://ec2-54-153-11-215.us-west-1.compute.amazonaws.com/jQuery3.1.1"></script>
+
+  </head>
+ 
+  <body>
+ 
+    <div class="container">
+      <div class="header">
+        <nav>
+          <ul class="nav nav-pills pull-right">
+            <li role="presentation" ><a href="main">Home</a></li>
+            <li role="presentation"><a href="signIn">Sign In</a></li>
+            <li role="presentation" class="active"><a href="signUp">Sign Up</a></li>
+          </ul>
+        </nav>
+        <h3 class="text-muted">Giving Tree Financial</h3>
+      </div>
+ 
+      <div class="jumbotron">
+        <h1>Giving Tree</h1>
+        <form class="form-signin">
+            
+        <label for="inputfname" class="sr-only">First name</label>
+        <input type="text" name="inputfname" id="inputfname" class="form-control" placeholder="First name" required autofocus>
+            
+        <label for="inputlname" class="sr-only">Last name</label>
+        <input type="text" name="inputlname" id="inputlname" class="form-control" placeholder="Last name" required>
+            
+        <label for="inputusername" class="sr-only">User name</label>
+        <input type="text" name="inputusername" id="inputusername" class="form-control" placeholder="User name" required>
+                
+        <label for="inputschoolname" class="sr-only">School Abbreviation (eg "UCSB")</label>
+        <input type="text" name="inputschoolname" id="inputschoolname" class="form-control" placeholder="School Abbreviation (eg 'UCSB')" required>
+            
+        <label for="inputemail" class="sr-only">Email address</label>
+        <input type="text" name="inputemail" id="inputemail" class="form-control" placeholder="Email address" required>
+            
+        <label for="inputpassword1" class="sr-only">Password</label>
+        <input type="password" name="inputpassword1" id="inputpassword1" class="form-control" placeholder="Password" required>
+            
+        <label for="inputpassword2" class="sr-only">Password</label>
+        <input type="password" name="inputpassword2" id="inputpassword2" class="form-control" placeholder="Password" required>
+         
+        <button id="btnSignUp" class="btn btn-lg btn-primary btn-block" type="button">Sign up!</button>
+	   
+        <p id="errorlabel" style="color: red; text-align: center; padding-top: 15px; padding-bottom: 0px; margin-bottom: 0px;"></p>
+      </form>
+      </div>
+ 
+<script>
+$(function() {
+    $('#btnSignUp').click(function() {
+ 
+        $.ajax({
+            url: '/signUpPost',
+            data: $('form').serialize(),
+            type: 'POST',
+            success: function(text) {
+		//response should be in json form
+		var response = JSON.parse(text);
+		console.log("Full JSON text: " + text)
+                if(response["error"] !== undefined) {
+			console.log("there was an error: " + response["error"]);
+			
+			$('#errorlabel').text(response["error"]);
+			$('#errorlabel').show();
+			//make label disappear after 2.5 seconds
+			setTimeout(function(){ $('#errorlabel').hide(); }, 2500);
+		}
+		else if(response["success"] !== undefined) {
+			$('#errorlabel').css('color', 'green');
+			$('#errorlabel').text("User created");
+			$('#errorlabel').show();
+			$('#btnSignUp').prop('disabled', true); //disable button once success has occured
+		}
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    });
+});
+</script>
+       
+ 
+      <footer class="footer">
+        <p>&copy; Company 2015</p>
+      </footer>
+ 
+    </div>
+  </body>
+</html>
+
